@@ -1,0 +1,23 @@
+- name: Installs apache web server
+  apt:
+    pkg: apache2
+    state: present
+    update_cache: true
+
+- name: Activates our virtualhost
+  copy:
+    src: templates/awesome-app.conf.j2
+    dest: /etc/apache2/sites-available/awesome-app.conf
+    mode: 0640
+- name: Activates our virtualhost
+  command: a2ensite awesome-app.conf
+- name: Check that our config is valid
+  command: apache2ctl configtest
+- name: Deactivates the default virtualhost
+  command: a2dissite 000-default.conf
+- name: Deactivates the default-ssl virtualhost
+  command: a2dissite default-ssl.conf  
+  notify:
+   - restart apache2
+
+  

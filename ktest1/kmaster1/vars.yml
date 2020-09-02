@@ -1,0 +1,29 @@
+gen_locales:
+- "en_US.UTF-8"
+
+# time
+timezone: "Asia/Kolkata"
+ntp_server_main: "0.ubuntu.pool.ntp.org"
+ntp_server_fallback: "1.ubuntu.pool.ntp.org"
+
+#keepalived virtual ip
+virtual_ip: "192.168.101.235"
+
+#keepalived priority set
+LoadBlance: 
+  - host: "knode1"
+    priority: 103
+  - host: "knode2"
+    priority: 102
+  - host: "knode3"
+    priority: 100     
+
+
+#keepalived set router_id
+Routerid:
+  - host: "knode1"
+    rout_id: 99
+  - host: "knode2"
+    rout_id: 100
+  - host: "knode3"
+    rout_id: 101    

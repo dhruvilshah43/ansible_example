@@ -1,0 +1,56 @@
+---
+- name: set journald storage to persistent
+  lineinfile: line='Storage=persistent' insertafter='^[Journal]' dest=/etc/systemd/journald.conf
+  notify: restart_journald
+
+- name: disable ipv6
+  copy: src=disable-ipv6.conf dest=/etc/sysctl.d/99-disable-ipv6.conf
+  notify: sysctl_disable_ipv6  
+  
+# {% for host in (groups['kube-masters'] | union(groups['kube-nodes'])) %}
+- name: add all cluster nodes to /etc/hosts
+  blockinfile:
+    path: /etc/hosts
+    insertafter: EOF
+    marker: "# {mark} cluster hosts"
+    block: |
+      {% for host in (groups['kube-masters']) %}
+      {% set hostname = hostvars[host]['ansible_hostname'] %}
+      {{ hostvars[host]['ansible_default_ipv4']['address'] }} {{ hostname }} {{ hostvars[host]['ansible_fqdn'] }}
+      {% endfor %}
+  
+- name: remove swapfile
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: add kubernetes apt key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: add kubernetes repository
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: kubernetes
+
+- name: install kubernetes
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - kubelet
+      - kubeadm
+      - kubectl
+      - kubernetes-cni

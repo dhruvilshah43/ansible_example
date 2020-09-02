@@ -1,0 +1,16 @@
+<VirtualHost *:80>
+        ServerName designdriver.dev.krupix.com
+        ServerAlias *.designdriver.dev.krupix.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/designdriver/
+
+        <Directory "/var/www/designdriver/">
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+                require all granted
+        </Directory>
+
+</VirtualHost>

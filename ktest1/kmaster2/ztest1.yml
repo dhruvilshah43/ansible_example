@@ -1,0 +1,11 @@
+---
+- hosts: kube-masters
+  remote_user: kspx
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  vars_files:
+  - vars.yml
+  roles:
+  - ztest1  
+            

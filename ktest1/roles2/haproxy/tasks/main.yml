@@ -1,0 +1,13 @@
+- name: install haproxy
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - haproxy
+
+- name: Update HAProxy config
+  template: src=templates/haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg backup=yes
+  notify: 
+    - restart haproxy   

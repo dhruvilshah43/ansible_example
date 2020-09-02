@@ -1,0 +1,26 @@
+---
+# - name: display
+#- debug: var=ansible_facts
+- debug: var=inventory_hostname
+- debug: var=inventory_hostname_short
+- debug: var=ansible_hostname
+- debug: var=ansible_fqdn
+- debug: var=ansible_default_ipv4
+# - debug: var=hostvars
+# - debug: var=group_names
+# - debug: var=LoadBlance
+# - debug: 
+#     msg: "{{ LoadBlance | map(attribute='host') | list }}"
+# - debug: 
+#     msg: "{{ (LoadBlance | items2dict(key_name='host', value_name='priority'))[inventory_hostname] | default(110)  }}"
+
+- name: Ensure hostname set
+  hostname: name={{ inventory_hostname }}
+  when: (inventory_hostname != ansible_fqdn) or (inventory_hostname_short != ansible_hostname)
+
+# - name: Ensure hostname is in /etc/hosts
+#   lineinfile:
+#     dest=/etc/hosts
+#     regexp="^{{ ansible_default_ipv4.address }}.+$"
+#     line="{{ ansible_default_ipv4.address }} {{ ansible_fqdn }} {{ ansible_hostname }}"
+  

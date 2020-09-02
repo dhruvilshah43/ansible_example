@@ -1,0 +1,5 @@
+- name: restart_timesyncd
+  systemd: name=systemd-timesyncd state=restarted
+
+- name: restart_cron
+  systemd: name=cron state=restarted

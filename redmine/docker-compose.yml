@@ -1,0 +1,48 @@
+version: '3.1'
+
+services:
+
+  redmine:
+    image: server.krusect.net:5000/redmine:3.4.6
+    restart: always
+    ports:
+      - "8001:3000"
+    volumes:
+      - redmine:/usr/src/redmine
+    environment:
+      - REDMINE_DB_MYSQL=192.168.100.64
+      - REDMINE_DB_USERNAME=redmine
+      - REDMINE_DB_PASSWORD=12345678
+      - REDMINE_DB_DATABASE=redmine
+      - REDMINE_DB_PORT=8002
+
+  mysql:
+    image: server.krusect.net:5000/mysql:8.0.12
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "8002:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=HGHjghdgj432
+      - MYSQL_DATABASE=redmine
+      - MYSQL_USER=redmine
+      - MYSQL_PASSWORD=12345678
+    restart: always
+
+  phpmyadmin:
+    image: server.krusect.net:5000/phpmyadmin/phpmyadmin:4.6
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_PORT=8002
+      - PMA_HOSTS=192.168.100.64
+    restart: always
+    ports:
+      - "8003:80"
+    volumes:
+      - phpmyadmin_data:/sessions
+      
+volumes:
+  mysql_data:
+  redmine:
+  phpmyadmin_data:

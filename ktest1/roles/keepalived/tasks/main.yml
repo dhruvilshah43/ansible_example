@@ -1,0 +1,16 @@
+---
+- name: install keepalived
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - keepalived
+  notify: restart keepalived
+
+- name: Update keepalived config
+  template: src=templates/keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf backup=yes
+  notify:
+    - start keepalived 
+    - restart keepalived

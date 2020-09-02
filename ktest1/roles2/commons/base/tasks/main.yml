@@ -1,0 +1,34 @@
+---
+- name: Ensure hostname set
+  hostname: name={{ inventory_hostname }}
+  when: (inventory_hostname != ansible_fqdn) or (inventory_hostname_short != ansible_hostname)
+  
+- name: install apt base packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+    - vim
+    - htop
+
+- name: gen locale(s)
+  locale_gen: name={{ item }} state=present
+  with_items:
+  - "{{ gen_locales }}"
+
+- name: set timezone to {{ timezone }}
+  timezone: name={{ timezone }}
+  notify:
+  - restart_cron
+
+- name: sync time with ntp
+  template: src=timesyncd.conf.j2 dest=/etc/systemd/timesyncd.conf
+  notify:
+  - restart_timesyncd  

@@ -27,3 +27,7 @@ Routerid:
     rout_id: 100
   - host: "knode3"
     rout_id: 101    
+
+# for Node js 
+NODEJS_VERSION: "8"
+ansible_distribution_release: "xenial" #trusty   

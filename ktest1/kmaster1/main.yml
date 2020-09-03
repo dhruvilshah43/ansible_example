@@ -9,9 +9,10 @@
   roles:
   - ztest1
   - commons/base
-  - haproxy
-  - apache2
-  - php7.2
+  - nodejs
+  #- haproxy
+ # - apache2
+ # - php7.2
   #- keepalived
   # - docker
   # - kubernetes/master
